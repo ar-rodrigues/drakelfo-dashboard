@@ -1,0 +1,45 @@
+# Ignore node_modules directory
+node_modules/
+
+# Ignore .env file (containing sensitive information)
+.env
+
+# Ignore build output
+/build/
+
+# Ignore logs
+*.log
+
+# Ignore dependencies installed via npm
+package-lock.json
+
+# Ignore IDE and editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Ignore macOS system files
+.DS_Store
+
+# Ignore compiled output and binaries
+*.o
+*.out
+*.exe
+*.dll
+
+# Ignore generated files and directories
+dist/
+tmp/
+cache/
+
+# Ignore database files
+*.db
+*.sqlite
+
+# Ignore development environment files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+

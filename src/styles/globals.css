@@ -1,0 +1,68 @@
+@tailwind base;
+
+/* Variables */
+:root {
+  --primary-color: #5e60ce;
+  --secondary-color: #f9c74f;
+}
+
+/* Global styles */
+html {
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #333;
+  color: #f2f2f2;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Responsive Utilities */
+@media (min-width: 640px) {
+  .container {
+    padding: 0 40px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 0 60px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding: 0 80px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    padding: 0 100px;
+  }
+}
+
+@media (min-width: 1536px) {
+  .container {
+    padding: 0 120px;
+  }
+}
+
+/* Tailwind CSS utilities */
+@tailwind components;
+@tailwind utilities;
