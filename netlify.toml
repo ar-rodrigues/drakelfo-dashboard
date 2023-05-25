@@ -1,5 +1,5 @@
 [build]
-  functions = "https://drakelfo-dashboard.netlify.app/.netlify/functions" # Replace "functions" with the path to your functions directory
+  functions = "https://drakelfo-dashboard.netlify.app/.netlify/functions/" # Replace "functions" with the path to your functions directory
 
 [functions]
   timeout = 180 # Replace "180" with the desired timeout value in seconds
