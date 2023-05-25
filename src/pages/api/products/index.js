@@ -1,4 +1,5 @@
-import { getSession } from "next-auth/react";
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "./auth/[...nextauth]"
 import { getData } from "../operations/getData";
 
 export default async function handler(req, res) {
@@ -6,7 +7,7 @@ export default async function handler(req, res) {
   console.log("query:", query);
 
   try {
-    const session = await getSession({ req });
+    const session = await getServerSession(req, res, authOptions)
 
     if (!session) {
       // User is not authenticated
