@@ -1,8 +1,7 @@
 // pages/api/auth/login.js
 
 // Define an array of users with their credentials
-const users = [ { "id": 1, "username": "alisson", "password": "842oldpass" }, { "id": 2, "username": "user2", "password": "password2" } ]
-//JSON.parse(process.env.USERS);
+const users = JSON.parse(process.env.USERS);
 console.log(users)
 
 export default async function login(req, res) {
