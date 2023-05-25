@@ -2,6 +2,7 @@
 
 // Define an array of users with their credentials
 const users = JSON.parse(process.env.USERS);
+console.log(users)
 
 export default async function login(req, res) {
   if (req.method === 'POST') {
