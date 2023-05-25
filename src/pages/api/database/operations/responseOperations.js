@@ -10,7 +10,7 @@ const key = process.env.KEY;
 const customerTest = process.env.CUSTOMER_TEST;
 const keyTest = process.env.KEY_TEST;
 const urlTest = process.env.URL_TEST;
-const url = process.env.URL;
+const url = process.env.URL_API;
 
 // Creates the model with the schema 
 let RESPONSE;
