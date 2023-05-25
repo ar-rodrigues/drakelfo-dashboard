@@ -17,23 +17,23 @@ async function updateOrCreateProducts(data) {
   try {
     console.log("CHECKING IF PRODUCTS ARE IN THE DATABASE");
 
-    const bulkOps = data.map(productData => {
-      return {
-        updateOne: {
-          filter: { sku: productData.sku },
-          update: productData,
-          upsert: true
-        }
-      };
-    });
+    const bulkOps = data.map(({ sku, ...productData }) => ({
+      updateOne: {
+        filter: { sku },
+        update: productData,
+        upsert: true,
+      },
+    }));
 
     await PRODUCTS.bulkWrite(bulkOps);
 
     console.log('All products updated or created successfully.');
   } catch (error) {
     console.error(error);
+    // Handle the error appropriately (throw an exception or return an error response)
   }
 }
+
 
 
 // Find all products function

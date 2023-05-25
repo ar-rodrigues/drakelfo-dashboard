@@ -1,6 +1,6 @@
 {
     "functions": {
-      "timeout": 120
+      "timeout": 100
     }
   }
   

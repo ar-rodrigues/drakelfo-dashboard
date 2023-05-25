@@ -1,7 +1,4 @@
-const fs = require("fs");
-const path = require("path");
 
-require("dotenv").config();
 const {
   updateOrCreateProducts,
   getAllProducts,
@@ -20,7 +17,7 @@ const getData = async () => {
     let products = await getAllProducts();
 
     // Check response products against database products
-    console.log("CHECKING THE IMAGES");
+    console.log("1. CHECKING THE IMAGES");
 
     const updatedProducts = await Promise.all(
       response.data.productos.map(async (producto) => {
@@ -49,7 +46,8 @@ const getData = async () => {
     );
 
     // Update or create the database
-    console.log("UPDATE OR CREATE THE DATABASE");
+    console.log("2. UPDATE OR CREATE THE DATABASE");
+    console.log(updatedProducts.length)
     await updateOrCreateProducts(updatedProducts);
 
     const database = {
