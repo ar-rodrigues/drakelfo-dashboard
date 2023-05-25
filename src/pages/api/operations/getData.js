@@ -13,54 +13,54 @@ const getProductUrl = require("./getProductUrl.js");
 
 const today = new Date().toDateString();
 
-
 const getData = async () => {
-  let response;
-
   try {
-    // create or update response file in the database
-    response = await updateOrCreateResponse();
-    response = response.data.productos;
-
-    // Get array of products from the database
-    console.log("GETTING ARRAY OF PRODUCTS")
-    const products = await getAllProducts();
+    // Create or update response file in the database
+    const response = await updateOrCreateResponse();
+    let products = await getAllProducts();
 
     // Check response products against database products
-    console.log("CHECKING THE IMAGES")
-    for (const producto of response) {
-      let sku = producto.sku;
+    console.log("CHECKING THE IMAGES");
 
-      // Find products from response in the database
-      let productoFromDatabase = await products.find((p) => p.sku === sku);
+    const updatedProducts = await Promise.all(
+      response.data.productos.map(async (producto) => {
+        const sku = producto.sku;
 
-      if (productoFromDatabase) {
-        // if product is in the database
-        if (productoFromDatabase.imgUrl) {
-          // if product has an image url
-          producto.imgUrl = productoFromDatabase.imgUrl;
+        // Find products from response in the database
+        const productoFromDatabase = products.find((p) => p.sku === sku);
+
+        if (productoFromDatabase) {
+          // If product is in the database
+          if (productoFromDatabase.imgUrl) {
+            // If product has an image URL
+            producto.imgUrl = productoFromDatabase.imgUrl;
+          } else {
+            // If product does not have an image URL
+            producto.imgUrl = ""; // await getProductUrl(sku);
+          }
         } else {
-          // if product does not have an image url
-          producto.imgUrl = ""//await getProductUrl(sku);
-          
+          // If product is not in the database
+          producto.imgUrl = ""; // await getProductUrl(sku);
+          console.log(`${sku} not in database`);
         }
-      } else {
-        // if product is not in the database
-        producto.imgUrl = ""//await getProductUrl(sku);
-        console.log(`${sku} no database`);
-      }
-    }
+
+        return producto;
+      })
+    );
 
     // Update or create the database
-    console.log("UPDATE OR CREATE THE DATABASE")
-    await updateOrCreateProducts(response);
+    console.log("UPDATE OR CREATE THE DATABASE");
+    await updateOrCreateProducts(updatedProducts);
 
-    const database = await new Promise((resolve) => {
-      resolve({ status: 200, fecha: today, data: response });
-    })
+    const database = {
+      status: 200,
+      fecha: today,
+      data: updatedProducts,
+    };
+
     return database;
   } catch (error) {
-    console.error(`What?`, error);
+    console.error("Error:", error);
     return { error: error.message };
   }
 };
