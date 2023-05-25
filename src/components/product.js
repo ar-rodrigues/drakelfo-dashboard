@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 
 
 const noImage = "/noimage.jpg"
+const url = process.env.ROUTE_URL
 
 export default function Product({ producto, setData, setShouldFetchData }) {
   const [product, setProduct] = useState(producto)
@@ -19,7 +20,7 @@ export default function Product({ producto, setData, setShouldFetchData }) {
   const saveProduct = async (productId, updateData)=>{
     try {
       //console.log(productId)
-      const response = await fetch(`http://localhost:3000/api?id=${productId}`, {
+      const response = await fetch(`${url}/api?id=${productId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json"
