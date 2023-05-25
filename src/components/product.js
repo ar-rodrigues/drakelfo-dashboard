@@ -20,7 +20,7 @@ export default function Product({ producto, setData, setShouldFetchData }) {
   const saveProduct = async (productId, updateData)=>{
     try {
       //console.log(productId)
-      const response = await fetch(`https://drakelfo-dashboard.vercel.app/api?id=${productId}`, {
+      const response = await fetch(`https://drakelfo-dashboard.netlify.app/api?id=${productId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json"
