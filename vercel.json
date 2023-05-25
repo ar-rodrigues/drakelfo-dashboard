@@ -1,6 +1,7 @@
 {
-    "functions": {
-      "timeout": 100
+  "functions": {
+    "api/**/*.js": {
+      "maxDuration": 60
     }
   }
-  
+}
