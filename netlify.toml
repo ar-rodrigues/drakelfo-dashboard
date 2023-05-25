@@ -1,5 +1,5 @@
 [build]
-  functions = "https://drakelfo-dashboard.netlify.app/.netlify/functions/" 
+  functions = "functions" 
 
 [functions]
   timeout = 180 
