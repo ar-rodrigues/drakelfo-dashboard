@@ -23,7 +23,7 @@ function TableButtons({
   const handleUpdate = async () => {
     setUpdateStatus("loading"); // Set the update status to 'loading'
     try {
-      const response = await fetch(`/api/products`);
+      const response = await fetch(`https://drakelfo-dashboard.alissonrodrigu3.repl.co/api/products`);
       if (response.ok) {
         const data = await response.json(); // Extract the JSON data
         setData(data.data); // Set the data state with the received data

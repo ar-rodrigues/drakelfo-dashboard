@@ -25,30 +25,28 @@ if (mongoose.models.RESPONSE) {
 async function updateOrCreateResponse() {
   try {
     const today = new Date().toDateString();
-    // FIND THE RESPONSE DOCUMENT
-    let response = await RESPONSE.findOne()
-    if (!response) {
-      const data = await fetchResponse(url, customer, key)
-      console.log(data.data)
-      // IF IT DOESN'T EXIST, CREATE IT
-      response = await RESPONSE.create({...data.data, fecha: today})
-      console.log("RESPONSE WAS CREATED")
-      return {...response._doc}
-    } else if (response.fecha !== today) {
-      const data = await fetchResponse(url, customer, key)
-      // IF IT EXISTS BUT IS NOT UP TO DATE, REPLACE IT
-      response = await RESPONSE.findOneAndReplace({_id: response._id}, {...data.data, fecha: today})
-      console.log("RESPONSE WAS UPDATED")
-      return {...response._doc} // add data property to the returned object
+
+    let response = await RESPONSE.findOne();
+
+    if (!response || response.fecha !== today) {
+      const data = await fetchResponse(url, customer, key);
+      response = await RESPONSE.findOneAndUpdate(
+        { _id: response?._id },
+        { ...data.data, fecha: today },
+        { upsert: true, new: true }
+      );
+
+      console.log(response ? "RESPONSE WAS UPDATED" : "RESPONSE WAS CREATED");
     } else {
-      // IF IT EXISTS AND IS UP TO DATE, RETURN IT
-      console.log("RESPONSE IS UP TO DATE")
-      return {...response._doc} // add data property to the returned object
+      console.log("RESPONSE IS UP TO DATE");
     }
+
+    return { ...response._doc, data: response?.data };
   } catch (error) {
     console.error(error);
   }
 }
+
 
 
 
