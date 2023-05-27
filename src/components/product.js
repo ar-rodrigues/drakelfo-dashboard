@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 
-
 const noImage = "/noimage.jpg"
-const url = process.env.ROUTE_URL
+const routeUrl = `${process.env.ROUTE_URL}/api?id=`
+
 
 export default function Product({ producto, setData, setShouldFetchData }) {
   const [product, setProduct] = useState(producto)
   const { descripcion, sku, imgUrl, _id:id } = product;
   const [edit, setEdit] = useState(false);
-
+  
   const handleChange = async (e,id)=>{
     const {value, name} = e.target
     setProduct((prevProduct)=>({...prevProduct, [name]:value }))
@@ -18,9 +18,10 @@ export default function Product({ producto, setData, setShouldFetchData }) {
   }
 
   const saveProduct = async (productId, updateData)=>{
+    
     try {
       //console.log(productId)
-      const response = await fetch(`https://drakelfo-dashboard.netlify.app/api?id=${productId}`, {
+      const response = await fetch(`${routeUrl}${productId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json"
@@ -42,7 +43,6 @@ export default function Product({ producto, setData, setShouldFetchData }) {
   }
 
   
-
   return (
     <div>
       <div className="flex items-center relative bg-white px-4 pt-5 pb-3 shadow-xl ring-1 ring-gray-900/5">

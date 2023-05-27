@@ -8,6 +8,7 @@ import PaginationButtons from "@/components/paginationButtons";
 import { useSession, getSession } from "next-auth/react";
 import LoginButton from "@/components/loginButton"
 
+
 export default function Dashboard() {
   const PAGE_SIZE = 50;
   const MENUS = ["descripcion", "sku", "imgUrl"];
