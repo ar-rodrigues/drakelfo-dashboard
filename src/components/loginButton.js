@@ -1,17 +1,7 @@
 import { useSession, signIn, signOut } from "next-auth/react";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
 
-export default function Component() {
+const LoginButton = () => {
   const { data: session, status } = useSession();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (status === "authenticated") {
-      // Redirect to /dashboard after signing in
-      router.push("/dashboard");
-    }
-  }, [status, router]);
 
   const handleSignToggle = async () => {
     if (session) {
@@ -51,4 +41,6 @@ export default function Component() {
       )}
     </>
   );
-}
+};
+
+export default LoginButton;

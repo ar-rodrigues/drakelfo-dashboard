@@ -1,12 +1,108 @@
-import Head from 'next/head';
-import LoginButton from '@/components/loginButton'
+import Head from "next/head";
+import Product from "../components/product";
+import TableButtons from "@/components/tableButtons";
+import Search from "@/components/search";
+import { useState } from "react";
+import { useEffect } from "react";
+import PaginationButtons from "@/components/paginationButtons";
+import { useSession, getSession } from "next-auth/react";
+import LoginButton from "@/components/loginButton"
 
-//const routeUrl = process.env.ROUTE_URL
+export default function Dashboard() {
+  const PAGE_SIZE = 50;
+  const MENUS = ["descripcion", "sku", "imgUrl"];
 
+  const { data: session, status } = useSession();
+  const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [menuSort, setMenuSort] = useState({
+    selectedMenu: MENUS[0],
+    sort: { order: true, field: "" },
+  });
+  const [search, setSearch] = useState({
+    key: "",
+    menuKey: "descripcion",
+  });
+  const [shouldFetchData, setShouldFetchData] = useState(true);
 
-export default function Home() {
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+  const handleSelect = (field) => {
+    const order = true;
+    setMenuSort({
+      selectedMenu: field,
+      sort: { order: !order, field: field },
+    });
+  };
+  const handleSearch = (e) => {
+    setSearch({ ...search, key: e.target.value?.toString() });
+    if (search.menuKey === "imgUrl" && search.key === "") {
+      //search for products with empty imgUrl
+      setFilteredData(data.filter((producto) => producto.imgUrl === ""));
+    } else {
+      setFilteredData(
+        data.filter((producto) => {
+          return producto[search.menuKey]
+            .toLowerCase()
+            .includes(e.target.value?.toLowerCase());
+        })
+      );
+    }
+  };
+
+  useEffect(() => {
+    setData((prevData) =>
+      [...prevData].sort((a, b) => {
+        const order = menuSort.sort.order ? 1 : -1;
+        if (a[menuSort.sort.field] < b[menuSort.sort.field]) {
+          return -1 * order;
+        }
+        if (a[menuSort.sort.field] > b[menuSort.sort.field]) {
+          return 1 * order;
+        }
+        return 0;
+      })
+    );
+    setFilteredData((prevData) =>
+      [...prevData].sort((a, b) => {
+        const order = menuSort.sort.order ? 1 : -1;
+        if (a[menuSort.sort.field] < b[menuSort.sort.field]) {
+          return -1 * order;
+        }
+        if (a[menuSort.sort.field] > b[menuSort.sort.field]) {
+          return 1 * order;
+        }
+        return 0;
+      })
+    );
+  }, [menuSort]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const res = await fetch("/api");
+      const data = await res.json();
+      setData(data);
+      setShouldFetchData(false);
+      console.log("DATA FETCHED");
+    }
+    if (shouldFetchData) {
+      fetchData();
+    }
+  }, [shouldFetchData]);
+
+  let start = (currentPage - 1) * PAGE_SIZE;
+  let end = start + PAGE_SIZE;
+
+  const displayData =
+    filteredData.length > 0 && search.key.length > 0
+      ? filteredData
+      : filteredData.length === 0 && search.key.length > 0
+      ? filteredData
+      : data;
   
-
+      console.log("status",status,"session",session)
   return (
     <>
       <Head>
@@ -15,11 +111,53 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="container mx-auto">
-        <LoginButton />
-        
 
+      {
+        status === "unauthenticated" && 
+        <div><h2>Access Denied</h2><LoginButton /></div>
+      }
+
+      {status === "authenticated" &&
+      <main className="container mx-auto">
+        <Search
+          categories={MENUS}
+          search={search}
+          setSearch={setSearch}
+          handleSearch={handleSearch}
+        />
+        <TableButtons
+          menus={MENUS}
+          menuSort={menuSort}
+          setMenuSort={setMenuSort}
+          onSelect={handleSelect}
+          setData={setData}
+          setShouldFetchData={setShouldFetchData}
+          displayData={displayData}
+        />
+
+        {
+          displayData.length === 0 && !search.key &&
+          <h2 className="text-align-center">...loading</h2>
+        }
+        {displayData &&
+          displayData.slice(start, end).map((producto) => (
+            <div key={producto["_id"] || producto["sku"]}>
+              <Product
+                producto={producto}
+                setData={setData}
+                setShouldFetchData={setShouldFetchData}
+              />
+            </div>
+          ))}
+
+        <PaginationButtons
+          data={displayData}
+          PAGE_SIZE={PAGE_SIZE}
+          handlePageChange={handlePageChange}
+          currentPage={currentPage}
+        />
       </main>
+}
     </>
   );
 }

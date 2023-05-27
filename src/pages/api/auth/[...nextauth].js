@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+const url = `${process.env.ROUTE_URL}/api/auth/login`
 
 export const authOptions = {
   // Configure one or more authentication providers
@@ -16,7 +17,7 @@ export const authOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        const res = await fetch("https://drakelfo-dashboard.vercel.app/api/auth/login", {
+        const res = await fetch(url, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
