@@ -1,15 +1,8 @@
-const mongodb = require('mongodb');
+const axios = require('axios'); // Add this if you haven't installed axios
 const mongoose = require('mongoose');
 const responseSchema = require('../schemas/responseSchema');
-const { fetchResponse } = require('../utils/fetchResponse');
-const database = require("../response.json")
 
 // Variables
-const customer = process.env.CUSTOMER;
-const key = process.env.KEY;
-const customerTest = process.env.CUSTOMER_TEST;
-const keyTest = process.env.KEY_TEST;
-const urlTest = process.env.URL_TEST;
 const url = process.env.URL_API;
 
 // Creates the model with the schema 
@@ -29,14 +22,20 @@ async function updateOrCreateResponse() {
     let response = await RESPONSE.findOne();
 
     if (!response || response.fecha !== today) {
-      const data = await fetchResponse(url, customer, key);
-      response = await RESPONSE.findOneAndUpdate(
-        { _id: response?._id },
-        { ...data.data, fecha: today },
-        { upsert: true, new: true }
-      );
+      // Make GET request to the new API endpoint
+      const { data } = await axios.get(url);
 
-      console.log(response ? "RESPONSE WAS UPDATED" : "RESPONSE WAS CREATED");
+      if (data.status === 200) {
+        response = await RESPONSE.findOneAndUpdate(
+          { _id: response?._id },
+          { ...data.data, fecha: today, origin: data.origin },
+          { upsert: true, new: true }
+        );
+
+        console.log(response ? "RESPONSE WAS UPDATED" : "RESPONSE WAS CREATED");
+      } else {
+        console.log("API responded with an error status:", data.message);
+      }
     } else {
       console.log("RESPONSE IS UP TO DATE");
     }
@@ -46,8 +45,5 @@ async function updateOrCreateResponse() {
     console.error(error);
   }
 }
-
-
-
 
 module.exports = { updateOrCreateResponse };
